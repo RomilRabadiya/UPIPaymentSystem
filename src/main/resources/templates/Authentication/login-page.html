@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UPI Login</title>
+</head>
+<body>
+<h2>Login</h2>
+
+<!-- Success message -->
+<div th:if="${message}" class="alert alert-success">
+    <p th:text="${message}"></p>
+</div>
+
+<!-- Error message -->
+<div th:if="${error}" class="alert alert-danger">
+    <p th:text="${error}"></p>
+</div>
+
+<!-- Login form -->
+<form th:action="@{/authenticateTheUser}" method="post">
+    <label for="mobile">Mobile:</label>
+    <input type="text" id="mobile" name="mobile" required><br><br>
+
+    <label for="pin">PIN:</label>
+    <input type="password" id="pin" name="pin" required><br><br>
+
+    <button type="submit">Login</button>
+</form>
+
+<p><a th:href="@{/register}">Register here</a></p>
+</body>
+</html>

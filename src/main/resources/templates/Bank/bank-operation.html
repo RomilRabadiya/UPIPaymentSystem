@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Bank Operation</title>
+    <meta charset="UTF-8" />
+</head>
+<body>
+    <h1>Bank Account Operation</h1>
+
+	<!-- Show bank account details -->
+    <div>
+        <p><strong>Account ID:</strong> <span th:text="${bankAccount.id}"></span></p>
+        <p><strong>Account Number:</strong> <span th:text="${bankAccount.accountNumber}"></span></p>
+        <p><strong>Bank Name:</strong> <span th:text="${bankAccount.bankName}"></span></p>
+        <p><strong>IFSC Code:</strong> <span th:text="${bankAccount.ifscCode}"></span></p>
+        <p><strong>Account Type:</strong> <span th:text="${bankAccount.accountType}"></span></p>
+        <p><strong>Balance:</strong> ₹<span th:text="${bankAccount.balance}"></span></p>
+    </div>
+
+    <hr/>
+	
+	
+	
+	<!-- Success message -->
+    <div th:if="${success}" style="color: green; font-weight: bold; margin-bottom: 10px;">
+        <p th:text="${success}"></p>
+    </div>
+    
+	
+	<h3>Available Payment Options</h3>
+
+	
+    <!-- Bank Transfer -->
+    <form th:action="@{/bank/transfer}" method="get">
+        <input type="hidden" name="accountId" th:value="${bankAccount.accountNumber}" />
+        <button type="submit">Bank Transfer</button>
+    </form>
+    <br/>
+	
+	
+
+    <!-- UPI Payment -->
+    <form th:action="@{/bank/upi}" method="get">
+        <input type="hidden" name="accountId" th:value="${bankAccount.accountNumber}" />
+        <button type="submit">UPI Payment</button>
+    </form>
+    <br/>
+
+	
+	
+    <!-- Contact Payment -->
+    <form th:action="@{/bank/contact}" method="get">
+        <input type="hidden" name="accountId" th:value="${bankAccount.accountNumber}" />
+        <button type="submit">Contact Payment</button>
+    </form>
+
+    <hr/>
+	
+	
+	<h2>Transactions for Account:</h2>
+
+	<table border="1">
+	    <tr>
+	        <th>Time</th>
+	        <th>Description</th>
+	        <th>Status</th>
+	        <th>Amount</th>
+	    </tr>
+	    <tr th:each="tx : ${transactions}">
+	        <td th:text="${tx.timestamp}"></td>
+	        <td th:text="${tx.description}"></td>
+	        <td th:text="${tx.status}"></td>
+	        <td th:text="${tx.amount}" 
+	            th:classappend="${#strings.startsWith(tx.amount, '+')} ? 'positive' : 'negative'">
+	        </td>
+	    </tr>
+	</table>
+
+	<style>
+	    .positive { color: green; font-weight: bold; }
+	    .negative { color: red; font-weight: bold; }
+	</style>
+	
+	
+	
+	<a th:href="@{/dashboard}">Back to Dashboard</a>
+	
+	
+</body>
+</html>

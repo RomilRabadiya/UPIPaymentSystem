@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Bank Account</title>
+</head>
+<body>
+<h2>Add Bank Account</h2>
+
+	<form th:action="@{/add-bank-process}" th:object="${bankAccount}" method="post">
+	    
+	    <!-- Hidden: mobile to link with user -->
+	    <input type="hidden" name="mobile" th:value="${user != null ? user.mobile : ''}" />
+	
+	    <div>
+	        <label for="accountNumber">Account Number:</label>
+	        <input type="text" id="accountNumber" th:field="*{accountNumber}" maxlength="20" required />
+	    </div>
+	
+	    <div>
+	        <label for="ifscCode">IFSC Code:</label>
+	        <input type="text" id="ifscCode" th:field="*{ifscCode}" maxlength="11" required />
+	    </div>
+	
+	    <div>
+	        <label for="bankName">Bank Name:</label>
+	        <input type="text" id="bankName" th:field="*{bankName}" required />
+	    </div>
+	
+	    <div>
+	        <label for="balance">Initial Balance:</label>
+	        <input type="number" id="balance" th:field="*{balance}" step="0.01" min="0" required />
+	    </div>
+	
+	    <div>
+	        <label for="accountType">Account Type:</label>
+	        <select id="accountType" th:field="*{accountType}" required>
+	            <option value="">-- Select --</option>
+	            <option value="SAVINGS">Savings</option>
+	            <option value="CURRENT">Current</option>
+	        </select>
+	    </div>
+	
+	    <div style="margin-top: 15px;">
+	        <button type="submit">Save Bank Account</button>
+	        <a th:href="@{/dashboard}">Cancel</a>
+	    </div>
+	</form>
+
+</body>
+</html>

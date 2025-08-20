@@ -1,0 +1,28 @@
+<!-- templates/Bank/bank-transfer-pin.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Enter PIN</title>
+    <meta charset="UTF-8" />
+</head>
+<body>
+    <h2>Confirm Transfer</h2>
+	
+	<p th:if="${error}" style="color:red;" th:text="${error}"></p>
+
+    <form th:action="@{/bank/transfer/confirm}" method="post">
+        <!-- Keep hidden fields to carry previous data -->
+        <input type="hidden" name="fromAccountNumber" th:value="${fromAccountNumber}" />
+        <input type="hidden" name="toAccountNumber" th:value="${toAccountNumber}" />
+        <input type="hidden" name="toIfscCode" th:value="${toIfscCode}" />
+        <input type="hidden" name="amount" th:value="${amount}" />
+
+        <div>
+            <label for="pin">Enter Transaction PIN:</label>
+            <input type="password" id="pin" name="pin" />
+        </div>
+
+        <button type="submit">Confirm Transfer</button>
+    </form>
+</body>
+</html>

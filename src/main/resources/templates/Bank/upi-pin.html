@@ -1,0 +1,32 @@
+<!-- templates/Bank/upi-pin.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Enter UPI PIN</title>
+    <meta charset="UTF-8" />
+</head>
+<body>
+    <h2>Confirm UPI Payment</h2>
+
+    <p>
+        Pay <b>₹<span th:text="${amount}"></span></b>
+        to UPI ID: <b><span th:text="${upiId}"></span></b>
+    </p>
+
+    <form th:action="@{/bank/upi/confirm}" method="post">
+        <input type="hidden" name="fromAccountNumber" th:value="${fromAccountNumber}" />
+        <input type="hidden" name="toAccountNumber" th:value="${toAccountNumber}" />
+		<input type="hidden" name="upiId" th:value="${upiId}" />
+        <input type="hidden" name="amount" th:value="${amount}" />
+
+        <div>
+            <label for="pin">Transaction PIN:</label>
+            <input type="password" id="pin" name="pin" />
+        </div>
+
+        <button type="submit">Confirm Payment</button>
+    </form>
+
+    <p th:if="${error}" style="color:red;" th:text="${error}"></p>
+</body>
+</html>
