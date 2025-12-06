@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register</title>
+    <style>
+        body { font-family: Arial; background:#f4f4f4; padding:50px; }
+        .container { width:400px; margin:auto; background:white; padding:20px; border-radius:8px; }
+        input, button { width:100%; padding:10px; margin:8px 0; }
+        button { background:#4CAF50; color:white; border:none; cursor:pointer; }
+        button:hover { background:#45a049; }
+        .error { color:red; font-size:14px; margin-top:-5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Create Account</h2>
+
+    <!-- Global duplicate mobile/email/upId error -->
+    <p class="error" th:text="${error}" th:if="${error}"></p>
+
+    <form action="/auth/register" method="post" th:object="${user}">
+
+        <!-- NAME -->
+        <input type="text" th:field="*{name}" placeholder="Full Name">
+        <p class="error" th:errors="*{name}"></p>
+
+        <!-- MOBILE -->
+        <input type="text" th:field="*{mobile}" placeholder="Mobile Number">
+        <p class="error" th:errors="*{mobile}"></p>
+
+        <!-- EMAIL -->
+        <input type="email" th:field="*{email}" placeholder="Email Address">
+        <p class="error" th:errors="*{email}"></p>
+
+        <!-- UPI ID -->
+        <input type="text" th:field="*{upiId}" placeholder="UPI ID (Eg: rahul@upi)">
+        <p class="error" th:errors="*{upiId}"></p>
+
+        <!-- PIN -->
+        <input type="password" th:field="*{pin}" placeholder="4–6 Digit PIN">
+        <p class="error" th:errors="*{pin}"></p>
+
+        <button type="submit">Register</button>
+    </form>
+
+    <p>Already have an account? <a href="/login">Login</a></p>
+</div>
+
+</body>
+</html>

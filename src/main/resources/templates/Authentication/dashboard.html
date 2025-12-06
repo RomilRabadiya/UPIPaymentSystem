@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background: white;
+            margin: 40px auto;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .info-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f4ff;
+            border-left: 4px solid #4a6cf7;
+            border-radius: 8px;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .value {
+            color: #555;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 10px 5px;
+            text-align: center;
+            background: #4a6cf7;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #3c59d4;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .token-box {
+            margin-top: 20px;
+            padding: 10px;
+            background: #fff3cd;
+            border-left: 4px solid #ffca2c;
+            border-radius: 8px;
+            word-wrap: break-word;
+            font-size: 12px;
+        }
+
+        .alert {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            border-left: 4px solid #dc3545;
+            color: #721c24;
+        }
+
+        .alert-warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            color: #856404;
+        }
+
+        .bank-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .bank-list li {
+            padding: 10px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .primary-badge {
+            color: green;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .button-group {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+    <!-- Include JWT Authentication Helper -->
+    <script src="/js/jwt-auth.js"></script>
+</head>
+
+<body>
+
+<div class="container" th:if="${user != null}">
+
+    <h2>Welcome, <span th:text="${user.name}">User</span>!</h2>
+
+    <div class="info-box">
+        <p><span class="label">Mobile:</span> <span class="value" th:text="${user.mobile}"></span></p>
+        <p><span class="label">Email:</span> <span class="value" th:text="${user.email}"></span></p>
+        <p><span class="label">UPI ID:</span> <span class="value" th:text="${user.upiId}"></span></p>
+    </div>
+
+    <!-- Error message -->
+    <div class="alert alert-danger" th:if="${error != null}">
+        <p th:text="${error}"></p>
+    </div>
+
+    <!-- Bank message -->
+    <div class="alert alert-warning" th:if="${bankMessage != null}">
+        <p th:text="${bankMessage}"></p>
+    </div>
+
+    <!-- Show warning if no primary account is set -->
+    <div class="alert alert-warning" th:if="${hasPrimaryBankAccount != null and !hasPrimaryBankAccount}">
+        <p>User does not have any Primary Account. For further process, please select a Primary Account.</p>
+    </div>
+
+    <!-- Show list of bank accounts if available -->
+    <div class="info-box" th:if="${bankList != null and !bankList.isEmpty()}">
+        <h3>Your Bank Accounts:</h3>
+        <ul class="bank-list">
+            <li th:each="bank : ${bankList}">
+                <span class="label" th:text="${bank.bankName}"></span> - 
+                <span class="value" th:text="${bank.accountNumber}"></span>
+                
+                <!-- Show (Primary) if this is the primary account -->
+                <span class="primary-badge" th:if="${bank.primaryAccount}">(Primary)</span>
+                
+                <!-- Operate button -->
+                <span th:if="${hasPrimaryBankAccount != null and hasPrimaryBankAccount}">
+                    <form th:action="@{/bank/process}" method="get" style="display: inline;">
+                        <input type="hidden" name="accountId" th:value="${bank.accountNumber}" />
+                        <button type="submit" class="btn">Operate</button>
+                    </form>
+                </span>
+                
+                <!-- Set as Primary button (only show if not already primary) -->
+                <form th:if="${!bank.primaryAccount}" th:action="@{/bank/set-primary}" method="post" style="display: inline;">
+                    <input type="hidden" name="accountId" th:value="${bank.accountNumber}" />
+                    <button type="submit" class="btn btn-secondary">Set as Primary</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Add Bank button -->
+    <div class="button-group">
+        <form th:action="@{/add-bank}" method="get" style="display: inline;">
+            <button type="submit" class="btn">Add Bank</button>
+        </form>
+        
+        <a th:href="@{/transactions}" class="btn btn-secondary">Show All Transactions</a>
+		<a th:href="@{/Test}" class="btn btn-secondary">Test</a>
+        <a th:href="@{/login}" class="btn btn-secondary">Logout</a>
+    </div>
+</div>
+
+<!-- Fallback if user is null -->
+<div class="container" th:if="${user == null}">
+    <h2>Error</h2>
+    <div class="alert alert-danger">
+        <p>User information not available. Please login again.</p>
+    </div>
+    <div class="button-group">
+        <a th:href="@{/login}" class="btn">Go to Login</a>
+    </div>
+</div>
+</body>
+</html>

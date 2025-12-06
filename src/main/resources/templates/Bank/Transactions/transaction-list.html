@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Transactions</title>
+</head>
+<body>
+<h2>All Transactions</h2>
+
+<table border="1" cellpadding="6">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>From Account</th>
+            <th>To Account</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Description</th>
+            <th>Timestamp</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="txn : ${transactions}">
+            <td th:text="${txn.id}"></td>
+            <td th:text="${txn.fromAccount.accountNumber}"></td>
+            <td th:text="${txn.toAccount.accountNumber}"></td>
+            <td th:text="${txn.amount}"></td>
+            <td th:text="${txn.status}"></td>
+            <td th:text="${txn.description}"></td>
+            <td th:text="${txn.timestamp}"></td>
+        </tr>
+    </tbody>
+</table>
+
+<a th:href="@{/dashboard}">Back to Dashboard</a>
+</body>
+</html>

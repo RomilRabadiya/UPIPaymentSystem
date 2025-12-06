@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+    <style>
+        body { font-family: Arial; background:#f0fff0; padding:50px; }
+        .container { width:350px; margin:auto; background:white; padding:20px; border-radius:8px; }
+        input, button { width:100%; padding:10px; margin:10px 0; }
+        button { background:#3333cc; color:white; border:none; cursor:pointer; }
+        button:hover { background:#2a2a99; }
+        .error { color:red; font-size:14px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Login</h2>
+
+    <!-- Global error (invalid credentials, user not verified, etc.) -->
+    <p class="error" th:text="${error}"></p>
+
+    <form action="#" th:action="@{/login}" th:object="${loginDto}" method="post">
+
+        <!-- Mobile -->
+        <input type="text" th:field="*{mobile}" placeholder="Mobile Number">
+        <div class="error" th:if="${#fields.hasErrors('mobile')}" 
+             th:errors="*{mobile}"></div>
+
+        <!-- PIN -->
+        <input type="password" th:field="*{pin}" placeholder="PIN">
+        <div class="error" th:if="${#fields.hasErrors('pin')}" 
+             th:errors="*{pin}"></div>
+
+        <button type="submit">Login</button>
+    </form>
+
+    <p>Don't have an account? <a href="/register">Register</a></p>
+</div>
+
+</body>
+</html>

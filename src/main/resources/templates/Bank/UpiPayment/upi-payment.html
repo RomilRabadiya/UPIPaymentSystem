@@ -1,0 +1,39 @@
+<!-- templates/Bank/upi-payment.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>UPI Payment</title>
+    <meta charset="UTF-8" />
+</head>
+<body>
+    <h2>UPI Payment</h2>
+	
+	<p th:if="${error}" style="color:red;" th:text="${error}"></p>
+	
+	<!--Warning Message -->
+    <p style="color:darkorange; font-weight:bold;">
+        UPI Payment is allowed only for <u>different users</u>.  
+        If you are transferring between your own bank accounts, please prefer the 
+        <a th:href="@{/bank/transfer}">Direct Bank Transfer</a> option.
+    </p>
+    
+    <p>Your Account: <b th:text="${bankAccount.accountNumber}"></b></p>
+    <p>Balance: ₹<b th:text="${bankAccount.balance}"></b></p>
+
+    <form th:action="@{/bank/upi/process}" method="post">
+        <input type="hidden" name="fromAccountNumber" th:value="${bankAccount.accountNumber}" />
+
+        <div>
+            <label for="upiId">Recipient UPI ID:</label>
+            <input type="text" id="upiId" name="upiId" required />
+        </div>
+
+        <div>
+            <label for="amount">Amount (₹):</label>
+            <input type="number" id="amount" name="amount" step="0.01" required />
+        </div>
+
+        <button type="submit">Pay</button>
+    </form>
+</body>
+</html>

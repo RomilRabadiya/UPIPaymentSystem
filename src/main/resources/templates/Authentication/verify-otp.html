@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Verify OTP</title>
+    <style>
+        body { font-family: Arial; background:#eef2ff; padding:50px; }
+        .container { width:350px; margin:auto; background:white; padding:20px; border-radius:8px; }
+        input, button { width:100%; padding:10px; margin:10px 0; }
+        button { background:#0066cc; color:white; border:none; cursor:pointer; }
+        button:hover { background:#004a99; }
+        button:disabled { background:#ccc; cursor:not-allowed; }
+        .error { color:red; }
+        #timer { font-weight:bold; color:#cc0000; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Verify OTP</h2>
+
+    <p>OTP sent to your email.</p>
+    <p>OTP expires in: <span id="timer" th:text="${remaining}">0</span> seconds</p>
+    <p class="error" th:text="${error}"></p>
+
+    <!-- OTP Verification Form -->
+    <form action="/verify-registration-otp" method="post">
+        <input type="hidden" name="mobile" th:value="${mobile}">
+        <input type="text" name="otp" placeholder="Enter OTP" required>
+        <button type="submit">Verify</button>
+    </form>
+
+    <!-- Resend OTP Form -->
+    <form action="/ResendOtp" method="post">
+        <input type="hidden" name="mobile" th:value="${mobile}" />
+		<input type="hidden" name="email" th:value="${email}" />
+        <button type="submit" id="resendBtn" disabled>Resend OTP</button>
+    </form>
+</div>
+
+<script>
+    let remaining = parseInt(document.getElementById("timer").innerText);
+    const resendBtn = document.getElementById("resendBtn");
+
+    function updateTimer() {
+        if (remaining <= 0) {
+            document.getElementById("timer").innerText = "0";
+            resendBtn.disabled = false; // enable resend button when expired
+            return;
+        }
+
+        remaining--;
+        document.getElementById("timer").innerText = remaining;
+        setTimeout(updateTimer, 1000);
+    }
+
+    // Disable resend button initially if timer > 0
+    if (remaining > 0) {
+        resendBtn.disabled = true;
+        updateTimer();
+    } else {
+        resendBtn.disabled = false;
+    }
+</script>
+
+</body>
+</html>
