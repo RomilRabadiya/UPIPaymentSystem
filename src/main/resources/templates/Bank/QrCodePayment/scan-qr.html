@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scan QR Code</title>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+
+<body>
+    <h2>Scan QR Code For Payment</h2>
+
+    <div id="reader" style="width: 300px;"></div>
+	<form id="upiForm" action="/QrCodePayment/submit-upi" method="post">
+	    <input type="text" id="upiField" name="upi" hidden>
+	</form>
+
+	<script>
+	    function onScanSuccess(decodedText) {
+	        console.log("Decoded QR:", decodedText);
+
+	        // Stop scanner after success
+	        html5QrcodeScanner.clear();
+
+	        // Set UPI value
+	        document.getElementById("upiField").value = decodedText;
+
+	        // Auto-submit the form
+	        document.getElementById("upiForm").submit();
+	    }
+
+	    var html5QrcodeScanner = new Html5QrcodeScanner(
+	        "reader",
+	        { fps: 10, qrbox: 250 },
+	        false
+	    );
+
+	    html5QrcodeScanner.render(onScanSuccess);
+	</script>
+</body>
+</html>

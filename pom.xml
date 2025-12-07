@@ -102,6 +102,23 @@
 		    <artifactId>jjwt-api</artifactId>
 		    <version>0.11.5</version>
 		</dependency>
+		
+		
+		<!-- ============================= -->
+        <!-- ZXING QR CODE GENERATOR       -->
+        <!-- ============================= -->
+
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.5.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>3.5.2</version>
+        </dependency>
 <dependency>
     <groupId>io.jsonwebtoken</groupId>
     <artifactId>jjwt-impl</artifactId>

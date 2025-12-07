@@ -1,5 +1,8 @@
 package com.example.UPIPaymentSystem.AuthenticationServices;
+//using :
 
+//JavaMailSender
+//JavaMailSender
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;

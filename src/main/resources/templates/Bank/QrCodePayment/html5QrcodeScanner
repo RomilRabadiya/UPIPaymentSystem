@@ -1,0 +1,122 @@
+# 🔍 **What is `Html5QrcodeScanner`?**
+
+`Html5QrcodeScanner` is a **pre-built scanner UI** provided by the library **html5-qrcode**.
+
+It automatically gives you:
+
+✔ Camera selection dropdown
+✔ Live camera preview
+✔ Scanning box
+✔ Automatic scanning loop
+✔ Built-in stop/start controls
+
+You don’t have to build UI manually — this class creates everything for you.
+
+---
+
+# 🧩 **How It Works in Your File**
+
+### Code:
+
+```javascript
+var html5QrcodeScanner = new Html5QrcodeScanner(
+    "reader",
+    { fps: 10, qrbox: 250 },
+    false
+);
+```
+
+### Explanation of parameters:
+
+### **1️⃣ "reader"**
+
+This is the **HTML element ID** where the scanner will be displayed.
+
+```html
+<div id="reader"></div>
+```
+
+---
+
+### **2️⃣ Scanner Configuration**
+
+```javascript
+{ fps: 10, qrbox: 250 }
+```
+
+* **fps: 10** → scan camera at 10 frames per second
+* **qrbox: 250** → scanning area is 250×250 pixels
+
+This helps reduce lag and improves scan accuracy.
+
+---
+
+### **3️⃣ Verbose Logging**
+
+```javascript
+false
+```
+
+* `true` = prints detailed logs
+* `false` = keep logs clean
+  You used **false**.
+
+---
+
+# 📌 **Start Scanning**
+
+```javascript
+html5QrcodeScanner.render(onScanSuccess);
+```
+
+### What happens here?
+
+* It **creates the UI** inside `<div id="reader">`
+* Turns ON your **camera**
+* Continuously checks for QR code
+* When QR is found → calls your function:
+
+```javascript
+function onScanSuccess(decodedText) { ... }
+```
+
+---
+
+# 🛑 **Stopping the Scanner**
+
+Inside your success function:
+
+```javascript
+html5QrcodeScanner.clear();
+```
+
+This stops:
+
+✔ Camera
+✔ Scanning loop
+✔ QR detection
+
+So the QR doesn’t scan repeatedly.
+
+---
+
+# 🧠 **In Short**
+
+`Html5QrcodeScanner` = **Full automatic QR scanning widget**
+It handles:
+
+* Camera selection
+* Opening webcam
+* Detecting QR
+* Showing live preview
+
+You only handle: **what to do after scanning**.
+
+---
+
+If you want, I can also explain:
+
+✅ `Html5Qrcode` (low-level API)
+✅ Differences between `Html5Qrcode` and `Html5QrcodeScanner`
+or
+✅ Rewrite your scanner UI in a custom style.

@@ -1,7 +1,11 @@
 package com.example.UPIPaymentSystem.Controller;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -10,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.UPIPaymentSystem.AuthenticationServices.OtpService;
+import com.example.UPIPaymentSystem.AuthenticationServices.QrCodeService;
 import com.example.UPIPaymentSystem.Entity.BankAccount;
 import com.example.UPIPaymentSystem.Entity.User;
 import com.example.UPIPaymentSystem.Entity.DTOs.LoginDto;
@@ -26,6 +31,9 @@ public class AuthController {
     private final UserService authService;
     private final OtpService otpService;
     private final BankAccountService bankAccountService;
+    
+    @Autowired
+    QrCodeService qrCodeService; 
     public AuthController(UserService authService, OtpService otpService,BankAccountService bankAccountService) {
         this.authService = authService;
         this.otpService = otpService;
@@ -155,10 +163,39 @@ public class AuthController {
 	         model.addAttribute("error", "Session expired. Please register again.");
 	         return "redirect:/register";
 	     }
-	
-	     authService.save(user);   // Save only after OTP verification
-	     session.removeAttribute("tempUser"); // Clean session
-	
+	     
+	     // --------------------------
+	     //  Generate QR Code Image
+	     // --------------------------
+	     try 
+	     {
+	         // Create QR image bytes
+	         byte[] qrBytes = qrCodeService.generateQRCode(user.getUpiId(), 200, 200);
+
+	         String folderPath = "uploads/QRCodes/";
+
+		      // Create folder if not exist
+		      File folder = new File(folderPath);
+		      if (!folder.exists()) folder.mkdirs();
+	         // File path → mobile_qr.png
+	         String filePath = folderPath + user.getMobile() + "_qr.png";
+
+	         // Write to system
+	         Files.write(Path.of(filePath), qrBytes);
+
+	         // Save path in DB field
+	         user.setQrCodePath(filePath);
+	         authService.save(user);
+	         session.removeAttribute("tempUser"); // Clean session
+	     } 
+	     catch (Exception e) 
+	     {
+	         model.addAttribute("error", "Failed to generate QR Code for your UPI");
+	         return "Authentication/register";
+	     }
+	     
+	     //We can Store QRCode To Local Store And Path of QRCode Store to user table 
+	     
 	     model.addAttribute("user", user);
 	     return "Authentication/dashboard";
 	 }

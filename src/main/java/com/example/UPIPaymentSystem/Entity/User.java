@@ -47,8 +47,20 @@ public class User {
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<BankAccount> accounts;
+    
+    
+    @Column(length = 500)
+    private String qrCodePath;
 
-    public User() {}
+    public String getQrCodePath() {
+		return qrCodePath;
+	}
+
+	public void setQrCodePath(String qrCodePath) {
+		this.qrCodePath = qrCodePath;
+	}
+
+	public User() {}
 
     public User(String mobile, String upiId, String name, String email, String pin) {
         this.mobile = mobile;
