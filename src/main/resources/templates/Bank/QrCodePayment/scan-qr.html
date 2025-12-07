@@ -7,12 +7,17 @@
 
 <body>
     <h2>Scan QR Code For Payment</h2>
-
+	
+	<!-- Error message -->
+    <div class="alert alert-danger" th:if="${error != null}">
+        <p th:text="${error}"></p>
+    </div>
+		
     <div id="reader" style="width: 300px;"></div>
 	<form id="upiForm" action="/QrCodePayment/submit-upi" method="post">
 	    <input type="text" id="upiField" name="upi" hidden>
 	</form>
-
+	
 	<script>
 	    function onScanSuccess(decodedText) {
 	        console.log("Decoded QR:", decodedText);

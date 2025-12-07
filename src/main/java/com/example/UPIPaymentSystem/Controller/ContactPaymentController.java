@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.UPIPaymentSystem.AuthenticationServices.EmailService;
 import com.example.UPIPaymentSystem.Entity.BankAccount;
 import com.example.UPIPaymentSystem.Entity.Transaction;
 import com.example.UPIPaymentSystem.Entity.User;
@@ -28,6 +29,9 @@ public class ContactPaymentController {
 
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private EmailService emailService;
     
     @Autowired
     private TransactionService transactionService;
@@ -148,6 +152,16 @@ public class ContactPaymentController {
                 "Contact Number Payment to " + mobile
         );
         transactionService.save(transaction);
+        
+        emailService.sendTransactionEmail(
+        		fromAccount.getUser().getEmail(),
+        		fromAccount.getUser().getName(),
+        		"Contact Payment to Contact : "+toAccount.getUser().getMobile()+" Name is "+toAccount.getUser().getName(),
+                fromAccount.getAccountNumber(),       // auto-masked
+                toAccount.getAccountNumber(),       // auto-masked
+                amount.toString(),
+                transaction.getId().toString()
+        );
         
         // PROBLEM: Direct POST response  (Disadvantage of POST Method)
         // model.addAttribute("success", "Transfer completed");

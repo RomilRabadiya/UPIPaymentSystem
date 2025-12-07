@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.UPIPaymentSystem.AuthenticationServices.EmailService;
 import com.example.UPIPaymentSystem.Entity.BankAccount;
 import com.example.UPIPaymentSystem.Entity.Transaction;
 import com.example.UPIPaymentSystem.Entity.User;
@@ -34,6 +35,9 @@ public class BankTransferController {
     
     @Autowired
     private TransactionService transactionService;
+    
+    @Autowired
+    private EmailService emailService;
     
     @GetMapping("/bank/transfer")
     public String bankTransfer(@RequestParam("accountId") String accountNumber, Model model)
@@ -174,6 +178,18 @@ public class BankTransferController {
                 "Bank Transfer to " + toAccount.getAccountNumber()
         );
         transactionService.save(transaction);
+        
+        
+        emailService.sendTransactionEmail(
+        		fromAccount.getUser().getEmail(),
+        		fromAccount.getUser().getName(),
+                "Bank Transfer",
+                fromAccount.getAccountNumber(),       // auto-masked
+                toAccount.getAccountNumber(),       // auto-masked
+                amount.toString(),
+                transaction.getId().toString()
+        );
+
         
         // PROBLEM: Direct POST response
         // model.addAttribute("success", "Transfer completed");

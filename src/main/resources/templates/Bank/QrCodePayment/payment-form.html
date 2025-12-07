@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Confirm UPI Payment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f4f6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 450px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 25px rgba(0,0,0,0.15);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+        }
+
+        .section h3 {
+            margin: 0 0 10px 0;
+            color: #444;
+        }
+
+        .row {
+            margin-bottom: 8px;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .value {
+            margin-left: 5px;
+            color: #222;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .btn-pay {
+            width: 100%;
+            background: #2563eb;
+            padding: 12px;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+
+        .btn-pay:hover {
+            background: #1d4ed8;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 12px;
+            border-left: 6px solid #dc2626;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Error Message -->
+    <div th:if="${error}" class="error">
+        <p th:text="${error}"></p>
+    </div>
+
+    <h2>Confirm UPI Payment</h2>
+
+    <!-- FROM ACCOUNT -->
+    <div class="section">
+        <h3>Your Account</h3>
+
+        <div class="row">
+            <span class="label">Account Number:</span>
+            <span class="value" th:text="${fromAccount.accountNumber}"></span>
+        </div>
+
+        <div class="row">
+            <span class="label">Account Holder:</span>
+            <span class="value" th:text="${fromAccount.user.name}"></span>
+        </div>
+
+        <div class="row">
+            <span class="label">Balance:</span>
+            <span class="value">₹ <span th:text="${fromAccount.balance}"></span></span>
+        </div>
+    </div>
+
+    <!-- TO ACCOUNT -->
+    <div class="section">
+        <h3>Receiver Details</h3>
+
+        <div class="row">
+            <span class="label">Name:</span>
+            <span class="value" th:text="${toAccount.user.name}"></span>
+        </div>
+    </div>
+
+    <!-- PAYMENT FORM -->
+    <form action="/QrCodePayment/confirm-payment" method="post">
+
+        <input type="hidden" name="fromAcc" th:value="${fromAccount.accountNumber}">
+        <input type="hidden" name="toAcc" th:value="${toAccount.accountNumber}">
+
+        <label class="label">Enter Amount</label>
+        <input type="number" name="amount" placeholder="Enter amount" required min="1">
+
+        <button type="submit" class="btn-pay">Pay Now</button>
+    </form>
+
+</div>
+
+</body>
+</html>

@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.UPIPaymentSystem.AuthenticationServices.EmailService;
 import com.example.UPIPaymentSystem.Entity.BankAccount;
 import com.example.UPIPaymentSystem.Entity.Transaction;
 import com.example.UPIPaymentSystem.Entity.User;
@@ -30,6 +31,9 @@ public class UpiPaymentController {
     
     @Autowired
     private TransactionService transactionService;
+    
+    @Autowired
+    private EmailService emailService;
     
     @GetMapping("/bank/upi")
     public String showUpiPaymentPage(@RequestParam("accountId") String accountId, Model model) {
@@ -116,10 +120,6 @@ public class UpiPaymentController {
             model.addAttribute("error", "User not found");
             return "error";
         }
-        System.out.println(pin);
-        System.out.println(pin);
-        System.out.println(pin);
-        System.out.println(pin);
         // 2. Validate PIN
         if (!user.getPin().equals(pin)) 
         {
@@ -153,6 +153,17 @@ public class UpiPaymentController {
                 "UPI Payment to " + upiId
         );
         transactionService.save(transaction);
+        
+        emailService.sendTransactionEmail(
+        		fromAccount.getUser().getEmail(),
+        		fromAccount.getUser().getName(),
+        		"UPI Payment",
+                fromAccount.getAccountNumber(),       // auto-masked
+                toAccount.getAccountNumber(),       // auto-masked
+                amount.toString(),
+                transaction.getId().toString()
+        );
+
         
         // PROBLEM: Direct POST response  (Disadvantage of POST Method)
         // model.addAttribute("success", "Transfer completed");
