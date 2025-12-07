@@ -3,12 +3,140 @@
 <head>
     <title>Bank Operation</title>
     <meta charset="UTF-8" />
-</head>
-<body>
-    <h1>Bank Account Operation</h1>
 
-	<!-- Show bank account details -->
-    <div>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f6f9;
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+            color: #333;
+        }
+
+        /* Container */
+        .container {
+            width: 90%;
+            max-width: 850px;
+            margin: 20px auto;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+        }
+
+        /* Account Details */
+        .details-box {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid #007bff;
+        }
+
+        .details-box p {
+            font-size: 16px;
+            margin: 8px 0;
+        }
+
+        strong {
+            color: #222;
+        }
+
+        /* Buttons */
+        button {
+            background: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            font-size: 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 200px;
+            transition: 0.3s;
+            margin-bottom: 8px;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        form {
+            text-align: center;
+        }
+
+        /* Success Message */
+        .success {
+            color: green;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        /* Transaction Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .positive {
+            color: green;
+            font-weight: bold;
+        }
+
+        .negative {
+            color: red;
+            font-weight: bold;
+        }
+
+        /* Back Link */
+        a {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            text-decoration: none;
+            color: #007bff;
+            font-size: 16px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Bank Account Operation</h1>
+	<a th:href="@{/dashboard}">Back to Dashboard</a>
+
+    <!-- Account Details -->
+    <div class="details-box">
         <p><strong>Account ID:</strong> <span th:text="${bankAccount.id}"></span></p>
         <p><strong>Account Number:</strong> <span th:text="${bankAccount.accountNumber}"></span></p>
         <p><strong>Bank Name:</strong> <span th:text="${bankAccount.bankName}"></span></p>
@@ -17,74 +145,50 @@
         <p><strong>Balance:</strong> ₹<span th:text="${bankAccount.balance}"></span></p>
     </div>
 
-    <hr/>
-	
-	
-	
-	<!-- Success message -->
-    <div th:if="${success}" style="color: green; font-weight: bold; margin-bottom: 10px;">
+    <!-- Success message -->
+    <div th:if="${success}" class="success">
         <p th:text="${success}"></p>
     </div>
-    
-	
-	<h3>Available Payment Options</h3>
 
-	
-    <!-- Bank Transfer -->
+
+    <h3>Available Payment Options</h3>
+
+    <!-- Payment Buttons -->
     <form th:action="@{/bank/transfer}" method="get">
         <input type="hidden" name="accountId" th:value="${bankAccount.accountNumber}" />
         <button type="submit">Bank Transfer</button>
     </form>
-    <br/>
-	
-	
 
-    <!-- UPI Payment -->
     <form th:action="@{/bank/upi}" method="get">
         <input type="hidden" name="accountId" th:value="${bankAccount.accountNumber}" />
         <button type="submit">UPI Payment</button>
     </form>
-    <br/>
 
-	
-	
-    <!-- Contact Payment -->
     <form th:action="@{/bank/contact}" method="get">
         <input type="hidden" name="accountId" th:value="${bankAccount.accountNumber}" />
         <button type="submit">Contact Payment</button>
     </form>
 
-    <hr/>
-	
-	
-	<h2>Transactions for Account:</h2>
+    <h2>Transactions for Account:</h2>
 
-	<table border="1">
-	    <tr>
-	        <th>Time</th>
-	        <th>Description</th>
-	        <th>Status</th>
-	        <th>Amount</th>
-	    </tr>
-	    <tr th:each="tx : ${transactions}">
-	        <td th:text="${tx.timestamp}"></td>
-	        <td th:text="${tx.description}"></td>
-	        <td th:text="${tx.status}"></td>
-	        <td th:text="${tx.amount}" 
-	            th:classappend="${#strings.startsWith(tx.amount, '+')} ? 'positive' : 'negative'">
-	        </td>
-	    </tr>
-	</table>
+    <table border="1">
+        <tr>
+            <th>Time</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Amount</th>
+        </tr>
+        <tr th:each="tx : ${transactions}">
+            <td th:text="${tx.timestamp}"></td>
+            <td th:text="${tx.description}"></td>
+            <td th:text="${tx.status}"></td>
+            <td th:text="${tx.amount}"
+                th:classappend="${#strings.startsWith(tx.amount, '+')} ? 'positive' : 'negative'">
+            </td>
+        </tr>
+    </table>
 
-	<style>
-	    .positive { color: green; font-weight: bold; }
-	    .negative { color: red; font-weight: bold; }
-	</style>
-	
-	
-	
-	<a th:href="@{/dashboard}">Back to Dashboard</a>
-	
-	
+</div>
+
 </body>
 </html>

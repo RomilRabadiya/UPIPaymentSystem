@@ -1,28 +1,155 @@
-<!-- templates/Bank/bank-transfer-pin.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Enter PIN</title>
     <meta charset="UTF-8" />
+    <title>Enter UPI PIN</title>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .pin-container {
+            width: 90%;
+            max-width: 420px;
+            background: #ffffff;
+            padding: 35px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        h2 {
+            color: #222;
+            margin-bottom: 5px;
+        }
+        h4 {
+            color: #777;
+            margin-top: 0;
+        }
+
+        .error {
+            color: #d32f2f;
+            font-size: 14px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .pin-inputs {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 25px 0;
+        }
+
+        .pin-box {
+            width: 45px;
+            height: 55px;
+            font-size: 26px;
+            text-align: center;
+            border: 2px solid #bbb;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .pin-box:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 6px rgba(0,123,255,0.5);
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            font-size: 17px;
+            border: none;
+            border-radius: 8px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .back-link {
+            margin-top: 18px;
+            display: inline-block;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 15px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <h2>Confirm Transfer</h2>
-	
-	<p th:if="${error}" style="color:red;" th:text="${error}"></p>
 
-    <form th:action="@{/bank/transfer/confirm}" method="post">
-        <!-- Keep hidden fields to carry previous data -->
+<div class="pin-container">
+
+    <h2>Enter UPI PIN</h2>
+    <h4>Confirm your bank transfer</h4>
+
+    <p th:if="${error}" class="error" th:text="${error}"></p>
+
+    <form th:action="@{/bank/transfer/confirm}" method="post" onsubmit="combinePin()">
+
+        <!-- Hidden fields -->
         <input type="hidden" name="fromAccountNumber" th:value="${fromAccountNumber}" />
         <input type="hidden" name="toAccountNumber" th:value="${toAccountNumber}" />
         <input type="hidden" name="toIfscCode" th:value="${toIfscCode}" />
         <input type="hidden" name="amount" th:value="${amount}" />
 
-        <div>
-            <label for="pin">Enter Transaction PIN:</label>
-            <input type="password" id="pin" name="pin" />
+        <!-- Actual PIN Field (Hidden) -->
+        <input type="hidden" id="pin" name="pin">
+
+        <!-- PIN Input Boxes -->
+        <div class="pin-inputs">
+            <input maxlength="1" class="pin-box" oninput="moveNext(this, 1)" id="p1">
+            <input maxlength="1" class="pin-box" oninput="moveNext(this, 2)" id="p2">
+            <input maxlength="1" class="pin-box" oninput="moveNext(this, 3)" id="p3">
+            <input maxlength="1" class="pin-box" oninput="moveNext(this, 4)" id="p4">
         </div>
 
         <button type="submit">Confirm Transfer</button>
+
     </form>
+
+    <a class="back-link" href="javascript:history.back()">Cancel</a>
+
+</div>
+
+<script>
+    // Auto move to next input
+    function moveNext(current, index) {
+        if (current.value.length === 1 && index < 6) {
+            document.getElementById("p" + (index + 1)).focus();
+        }
+    }
+
+    // Combine all pin boxes into one hidden input
+    function combinePin() {
+        let pin = "";
+        for (let i = 1; i <= 4; i++) {
+            pin += document.getElementById("p" + i).value;
+        }
+        document.getElementById("pin").value = pin;
+    }
+
+    // Focus first box on page load
+    window.onload = () => document.getElementById("p1").focus();
+</script>
+
 </body>
 </html>

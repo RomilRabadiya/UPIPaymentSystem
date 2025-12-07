@@ -90,11 +90,15 @@ public class BankAccountService
     
     public boolean setPrimaryAccount(String userMobile, String accountNumber) 
 	{
-		User user = userRepository.findById(userMobile).orElse(null);
-	    if (user == null) return false;
+		User user = userRepository.findByMobile(userMobile);
+	    if (user == null) 
+	    {
+	    	return false;
+	    }
 
 	    // Reset all to false
-	    for (BankAccount acc : user.getAccounts()) {
+	    for (BankAccount acc : user.getAccounts()) 
+	    {
 	        acc.setPrimaryAccount(false);
 	    }
 
@@ -114,9 +118,10 @@ public class BankAccountService
     @Autowired
     private UserRepository userRepository;
 
-    public BankAccount findByUpiId(String upiId) {
+    public BankAccount findByUpiId(String upiId) 
+    {
         // Find the user by UPI ID
-        User user = getUserFromAuthentication();
+        User user = userRepository.findByUpiId(upiId);
         
         if (user == null) 
         {

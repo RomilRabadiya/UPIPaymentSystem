@@ -42,10 +42,10 @@ public class User {
 
     // ---------------- PIN ----------------
     @NotBlank(message = "PIN is required")
-    @Pattern(regexp = "^[0-9]{4,6}$", message = "PIN must be 4–6 digits")
+    @Pattern(regexp = "^[0-9]{4}$", message = "PIN must be 4 digits")
     private String pin;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<BankAccount> accounts;
 
     public User() {}

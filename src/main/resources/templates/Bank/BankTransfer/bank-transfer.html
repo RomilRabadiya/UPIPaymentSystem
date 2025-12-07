@@ -3,17 +3,130 @@
 <head>
     <title>Bank Transfer</title>
     <meta charset="UTF-8" />
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 25px;
+            color: #333;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 550px;
+            margin: 30px auto;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+        }
+
+        .details-box {
+            background: #fff;
+            padding: 18px;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+            margin-bottom: 20px;
+        }
+
+        .details-box p {
+            margin: 7px 0;
+            font-size: 16px;
+        }
+
+        strong {
+            color: #222;
+        }
+
+        .error {
+            color: #fff;
+            background: #e53935;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        form div {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 6px;
+            color: #444;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #bbb;
+            border-radius: 5px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        .field-error {
+            color: red;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        a {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            text-decoration: none;
+            color: #007bff;
+            font-size: 16px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
 </head>
+
 <body>
-    <h1>Bank Transfer</h1>
-	
-	
-	<div th:if="${error}" class="error">
+
+<h1>Bank Transfer</h1>
+
+<div class="container">
+
+    <!-- Error message -->
+    <div th:if="${error}" class="error">
         <p th:text="${error}"></p>
     </div>
 
-    <!-- Show source account -->
-    <div>
+    <!-- Show Source Account -->
+    <div class="details-box">
         <p><strong>From Account:</strong> <span th:text="${bankAccount.accountNumber}"></span></p>
         <p><strong>Bank Name:</strong> <span th:text="${bankAccount.bankName}"></span></p>
         <p><strong>Balance:</strong> ₹<span th:text="${bankAccount.balance}"></span></p>
@@ -21,39 +134,52 @@
 
     <hr/>
 
-	
-	
-	
-	
-    <!-- Bank Transfer Form -->
-	
-    <form th:action="@{/bank/transfer/process}" method="post">
-        
-		<!-- Keep track of the sender account -->
+    <!-- Transfer Form With Validation -->
+    <form th:action="@{/bank/transfer/process}" th:object="${transferRequest}" method="post">
+
         <input type="hidden" name="fromAccountNumber" th:value="${bankAccount.accountNumber}" />
 
+        <!-- Recipient Account Number -->
         <div>
             <label for="toAccountNumber">Recipient Account Number:</label>
-            <input type="text" id="toAccountNumber" name="toAccountNumber" required />
+            <input type="text" id="toAccountNumber" th:field="*{toAccountNumber}" required />
+            
+            <div class="field-error"
+                 th:if="${#fields.hasErrors('toAccountNumber')}"
+                 th:errors="*{toAccountNumber}">
+            </div>
         </div>
 
+        <!-- IFSC Code -->
         <div>
             <label for="toIfscCode">Recipient IFSC Code:</label>
-            <input type="text" id="toIfscCode" name="toIfscCode" required />
+            <input type="text" id="toIfscCode" th:field="*{toIfscCode}" required />
+
+            <div class="field-error"
+                 th:if="${#fields.hasErrors('toIfscCode')}"
+                 th:errors="*{toIfscCode}">
+            </div>
         </div>
 
+        <!-- Amount -->
         <div>
             <label for="amount">Amount:</label>
-            <input type="number" id="amount" name="amount" step="0.01" min="1" required />
+            <input type="number" id="amount" th:field="*{amount}" step="0.01" min="1" required />
+
+            <div class="field-error"
+                 th:if="${#fields.hasErrors('amount')}"
+                 th:errors="*{amount}">
+            </div>
         </div>
 
         <button type="submit">Transfer</button>
     </form>
-	
-	
-	
 
     <hr/>
+
     <a th:href="@{/bank/process(accountId=${bankAccount.accountNumber})}">Back to Account</a>
+
+</div>
+
 </body>
 </html>

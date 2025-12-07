@@ -1,22 +1,138 @@
-<!-- templates/Bank/upi-payment.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>UPI Payment</title>
     <meta charset="UTF-8" />
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 450px;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+        }
+
+        h2 {
+            text-align: center;
+            color: #222;
+            margin-bottom: 15px;
+        }
+
+        p {
+            font-size: 15px;
+            color: #444;
+            margin: 8px 0;
+        }
+
+        p b {
+            color: #000;
+        }
+
+        .warning {
+            color: darkorange;
+			font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .warning a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .warning a:hover {
+            text-decoration: underline;
+        }
+
+        form div {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #bbb;
+            border-radius: 6px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        .error {
+            color: #d32f2f;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 500px) {
+            .container {
+                padding: 20px;
+            }
+
+            input[type="text"], input[type="number"] {
+                font-size: 14px;
+                padding: 8px;
+            }
+
+            button {
+                font-size: 15px;
+                padding: 10px;
+            }
+        }
+    </style>
 </head>
+
 <body>
+
+<div class="container">
     <h2>UPI Payment</h2>
-	
-	<p th:if="${error}" style="color:red;" th:text="${error}"></p>
-	
-	<!--Warning Message -->
-    <p style="color:darkorange; font-weight:bold;">
+
+    <p th:if="${error}" class="error" th:text="${error}"></p>
+
+    <p class="warning">
         UPI Payment is allowed only for <u>different users</u>.  
         If you are transferring between your own bank accounts, please prefer the 
-        <a th:href="@{/bank/transfer}">Direct Bank Transfer</a> option.
+		<a th:href="@{/bank/transfer(accountId=${bankAccount.accountNumber})}">Direct Bank Transfer</a> option.
     </p>
-    
+
     <p>Your Account: <b th:text="${bankAccount.accountNumber}"></b></p>
     <p>Balance: ₹<b th:text="${bankAccount.balance}"></b></p>
 
@@ -35,5 +151,7 @@
 
         <button type="submit">Pay</button>
     </form>
+</div>
+
 </body>
 </html>

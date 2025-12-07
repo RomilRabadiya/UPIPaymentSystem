@@ -18,6 +18,7 @@ import com.example.UPIPaymentSystem.Repo_Service.UserService;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 public class ContactPaymentController {
@@ -41,6 +42,7 @@ public class ContactPaymentController {
 
         return "Bank/ContactPayment/contact-payment";
     }
+    
     
     // submit mobile & amount → show PIN page
     @PostMapping("/bank/contact/process")
@@ -105,70 +107,58 @@ public class ContactPaymentController {
                                  Model model,
                                  RedirectAttributes redirectAttributes)
     {
-    	// 1. Get authenticated user
-    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        if (auth != null && auth.isAuthenticated()) {
-
-            UserDetails userDetails = (UserDetails) auth.getPrincipal();
-            
-            String Usermobile = userDetails.getUsername();
-
-            // Find user by mobile
-            User user = bankAccountService.getUserFromAuthentication();
-            if (user == null) 
-            {
-                model.addAttribute("error", "User not found");
-                return "error";
-            }
-
-	        // 2. Validate PIN
-	        if (!user.getPin().equals(pin)) 
-	        {
-	        	//inValidate PIN
-	        	model.addAttribute("fromAccountNumber", fromAccountNumber);
-	            model.addAttribute("toAccountNumber", toAccountNumber);
-	            model.addAttribute("amount", amount);
-	            model.addAttribute("error", "Invalid Transaction PIN!");
-	            return "Bank/ContactPayment/contact-payment-pin";  // stay on PIN page
-	        }
-
-	        BankAccount fromAccount = bankAccountService.findByAccountNumber(fromAccountNumber);
-	        BankAccount toAccount = bankAccountService.findByAccountNumber(toAccountNumber);
-	        
-	        // 3. Do transfer
-	        fromAccount.setBalance(fromAccount.getBalance().subtract(amount));
-	        toAccount.setBalance(toAccount.getBalance().add(amount));
-	
-	        bankAccountService.update(fromAccount);
-	        bankAccountService.update(toAccount);
-	
-	        // 4. Success
-	        model.addAttribute("bankAccount", fromAccount);
-	        
-	        Transaction transaction = new Transaction(
-	                fromAccount,
-	                toAccount,
-	                amount,
-	                "SUCCESS",
-	                LocalDateTime.now(),
-	                "Contact Number Payment to " + mobile
-	        );
-	        transactionService.save(transaction);
-	        
-	        // PROBLEM: Direct POST response  (Disadvantage of POST Method)
-	        // model.addAttribute("success", "Transfer completed");
-	        // return "Bank/bank-operation";
-	        
-	        // IMPORTANT: Use RedirectAttributes to pass success message
-	        // This prevents message duplication on page reload
-	        redirectAttributes.addFlashAttribute("success", "₹" + amount + " transferred successfully to " + toAccountNumber);
-
-	        // SECURITY FIX: Redirect after POST to prevent duplicate transactions on browser reload
-	        // Pattern: POST-Redirect-GET (PRG) - prevents form resubmission
-	        return "redirect:/bank/success?accountId=" + fromAccountNumber;
+        // Find user by mobile
+        User user = bankAccountService.getUserFromAuthentication();
+        if (user == null) 
+        {
+            model.addAttribute("error", "User not found");
+            return "error";
         }
-	        
-        return "Authentication/access-denied";
+
+        // 2. Validate PIN
+        if (!user.getPin().equals(pin)) 
+        {
+        	//inValidate PIN
+        	model.addAttribute("fromAccountNumber", fromAccountNumber);
+            model.addAttribute("toAccountNumber", toAccountNumber);
+            model.addAttribute("amount", amount);
+            model.addAttribute("error", "Invalid Transaction PIN!");
+            return "Bank/ContactPayment/contact-payment-pin";  // stay on PIN page
+        }
+
+        BankAccount fromAccount = bankAccountService.findByAccountNumber(fromAccountNumber);
+        BankAccount toAccount = bankAccountService.findByAccountNumber(toAccountNumber);
+        
+        // 3. Do transfer
+        fromAccount.setBalance(fromAccount.getBalance().subtract(amount));
+        toAccount.setBalance(toAccount.getBalance().add(amount));
+
+        bankAccountService.update(fromAccount);
+        bankAccountService.update(toAccount);
+
+        // 4. Success
+        model.addAttribute("bankAccount", fromAccount);
+        
+        Transaction transaction = new Transaction(
+                fromAccount,
+                toAccount,
+                amount,
+                "SUCCESS",
+                LocalDateTime.now(),
+                "Contact Number Payment to " + mobile
+        );
+        transactionService.save(transaction);
+        
+        // PROBLEM: Direct POST response  (Disadvantage of POST Method)
+        // model.addAttribute("success", "Transfer completed");
+        // return "Bank/bank-operation";
+        
+        // IMPORTANT: Use RedirectAttributes to pass success message
+        // This prevents message duplication on page reload
+        redirectAttributes.addFlashAttribute("success", "₹" + amount + " transferred successfully to " + toAccountNumber);
+
+        // SECURITY FIX: Redirect after POST to prevent duplicate transactions on browser reload
+        // Pattern: POST-Redirect-GET (PRG) - prevents form resubmission
+        return "redirect:/bank/success?accountId=" + fromAccountNumber;
    }
 }

@@ -1,12 +1,14 @@
 package com.example.UPIPaymentSystem.Repo_Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import com.example.UPIPaymentSystem.Entity.User;
 import com.example.UPIPaymentSystem.Security.JwtUtil;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -95,4 +97,6 @@ public class UserService {
     public void removeByMobile(String mobile) {
         userRepository.deleteByMobile(mobile);
     }
+
+
 }

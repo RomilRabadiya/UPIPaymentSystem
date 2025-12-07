@@ -2,49 +2,168 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Add Bank Account</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 25px;
+            color: #333;
+        }
+
+        form {
+            width: 400px;
+            margin: 30px auto;
+            padding: 25px;
+            background: #fff;
+            box-shadow: 0px 2px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+
+        div {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: #444;
+        }
+
+        .desc {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #bbb;
+            border-radius: 5px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        .error {
+            color: red;
+            font-size: 13px;
+            margin-top: 3px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #555;
+            font-size: 14px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+
 </head>
 <body>
+
 <h2>Add Bank Account</h2>
 
-	<form th:action="@{/add-bank-process}" th:object="${bankAccount}" method="post">
-	    
-	    <!-- Hidden: mobile to link with user -->
-	    <input type="hidden" name="mobile" th:value="${user != null ? user.mobile : ''}" />
-	
-	    <div>
-	        <label for="accountNumber">Account Number:</label>
-	        <input type="text" id="accountNumber" th:field="*{accountNumber}" maxlength="20" required />
-	    </div>
-	
-	    <div>
-	        <label for="ifscCode">IFSC Code:</label>
-	        <input type="text" id="ifscCode" th:field="*{ifscCode}" maxlength="11" required />
-	    </div>
-	
-	    <div>
-	        <label for="bankName">Bank Name:</label>
-	        <input type="text" id="bankName" th:field="*{bankName}" required />
-	    </div>
-	
-	    <div>
-	        <label for="balance">Initial Balance:</label>
-	        <input type="number" id="balance" th:field="*{balance}" step="0.01" min="0" required />
-	    </div>
-	
-	    <div>
-	        <label for="accountType">Account Type:</label>
-	        <select id="accountType" th:field="*{accountType}" required>
-	            <option value="">-- Select --</option>
-	            <option value="SAVINGS">Savings</option>
-	            <option value="CURRENT">Current</option>
-	        </select>
-	    </div>
-	
-	    <div style="margin-top: 15px;">
-	        <button type="submit">Save Bank Account</button>
-	        <a th:href="@{/dashboard}">Cancel</a>
-	    </div>
-	</form>
+<form th:action="@{/add-bank-process}" th:object="${bankAccount}" method="post">
+
+    <input type="hidden" name="mobile" th:value="${user != null ? user.mobile : ''}" />
+
+    <!-- Account Number -->
+    <div>
+        <label for="accountNumber">Account Number:</label>
+
+        <p class="desc">Enter your 8–20 digit bank account number.</p>
+
+        <input type="text" id="accountNumber" th:field="*{accountNumber}" maxlength="20" required />
+
+        <div class="error" th:if="${#fields.hasErrors('accountNumber')}" 
+             th:errors="*{accountNumber}"></div>
+    </div>
+
+    <!-- IFSC Code -->
+    <div>
+        <label for="ifscCode">IFSC Code:</label>
+
+        <p class="desc">Enter valid IFSC Code (e.g., SBIN0001234).</p>
+
+        <input type="text" id="ifscCode" th:field="*{ifscCode}" maxlength="11" required />
+
+        <div class="error" th:if="${#fields.hasErrors('ifscCode')}" 
+             th:errors="*{ifscCode}"></div>
+    </div>
+
+    <!-- Bank Name -->
+    <div>
+        <label for="bankName">Bank Name:</label>
+
+        <p class="desc">Enter your bank name. Only letters allowed.</p>
+
+        <input type="text" id="bankName" th:field="*{bankName}" required />
+
+        <div class="error" th:if="${#fields.hasErrors('bankName')}" 
+             th:errors="*{bankName}"></div>
+    </div>
+
+    <!-- Balance -->
+    <div>
+        <label for="balance">Initial Balance:</label>
+
+        <p class="desc">Enter starting balance (must be 0 or above).</p>
+
+        <input type="number" id="balance" th:field="*{balance}" step="0.01" min="0" required />
+
+        <div class="error" th:if="${#fields.hasErrors('balance')}" 
+             th:errors="*{balance}"></div>
+    </div>
+
+    <!-- Account Type -->
+    <div>
+        <label for="accountType">Account Type:</label>
+
+        <p class="desc">Choose Savings or Current account.</p>
+
+        <select id="accountType" th:field="*{accountType}" required>
+            <option value="">-- Select --</option>
+            <option value="SAVINGS">Savings</option>
+            <option value="CURRENT">Current</option>
+        </select>
+
+        <div class="error" th:if="${#fields.hasErrors('accountType')}" 
+             th:errors="*{accountType}"></div>
+    </div>
+
+    <button type="submit">Save Bank Account</button>
+    <a th:href="@{/dashboard}">Cancel</a>
+
+</form>
 
 </body>
 </html>

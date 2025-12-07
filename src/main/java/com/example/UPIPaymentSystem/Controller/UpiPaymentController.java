@@ -48,8 +48,8 @@ public class UpiPaymentController {
             @RequestParam("fromAccountNumber") String fromAccountNumber,
             @RequestParam("upiId") String upiId,
             @RequestParam("amount") BigDecimal amount,
-            Model model) {
-    	
+            Model model) 
+    {
     	// 1. Find sender account
         BankAccount fromAccount = bankAccountService.findByAccountNumber(fromAccountNumber);
 
@@ -78,6 +78,10 @@ public class UpiPaymentController {
             return "Bank/UpiPayment/upi-payment";
         }
         
+        
+        System.out.println(fromAccount);
+        System.out.println(toAccount);
+        
         if (fromAccount.getUser().equals(toAccount.getUser()))
         {
         	//Same Account
@@ -105,70 +109,61 @@ public class UpiPaymentController {
             Model model,
             RedirectAttributes redirectAttributes) 
     {
-    	// 1. Get authenticated user
-    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        if (auth != null && auth.isAuthenticated()) {
-
-            UserDetails userDetails = (UserDetails) auth.getPrincipal();
-            
-            String mobile = userDetails.getUsername();
-
-            // Find user by mobile
-            User user = bankAccountService.getUserFromAuthentication();
-            if (user == null) 
-            {
-                model.addAttribute("error", "User not found");
-                return "error";
-            }
-
-	        // 2. Validate PIN
-	        if (!user.getPin().equals(pin)) 
-	        {
-	        	//inValidate PIN
-	        	model.addAttribute("fromAccountNumber", fromAccountNumber);
-	            model.addAttribute("toAccountNumber", toAccountNumber);
-	            model.addAttribute("amount", amount);
-	            model.addAttribute("error", "Invalid Transaction PIN!");
-	            return "Bank/UpiPayment/upi-pin";  // stay on PIN page
-	        }
-
-	        BankAccount fromAccount = bankAccountService.findByAccountNumber(fromAccountNumber);
-	        BankAccount toAccount = bankAccountService.findByAccountNumber(toAccountNumber);
-	        
-	        // 3. Do transfer
-	        fromAccount.setBalance(fromAccount.getBalance().subtract(amount));
-	        toAccount.setBalance(toAccount.getBalance().add(amount));
-	
-	        bankAccountService.update(fromAccount);
-	        bankAccountService.update(toAccount);
-	
-	        // 4. Success
-	        model.addAttribute("bankAccount", fromAccount);
-	        
-	        Transaction transaction = new Transaction(
-	                fromAccount,
-	                toAccount,
-	                amount,
-	                "SUCCESS",
-	                LocalDateTime.now(),
-	                "UPI Payment to " + upiId
-	        );
-	        transactionService.save(transaction);
-	        
-	        // PROBLEM: Direct POST response  (Disadvantage of POST Method)
-	        // model.addAttribute("success", "Transfer completed");
-	        // return "Bank/bank-operation";
-	        
-	        // IMPORTANT: Use RedirectAttributes to pass success message
-	        // This prevents message duplication on page reload
-	        redirectAttributes.addFlashAttribute("success", "₹" + amount + " transferred successfully to " + toAccountNumber);
-
-	        // SECURITY FIX: Redirect after POST to prevent duplicate transactions on browser reload
-	        // Pattern: POST-Redirect-GET (PRG) - prevents form resubmission
-	        return "redirect:/bank/success?accountId=" + fromAccountNumber;
+        // Find user by mobile
+        User user = bankAccountService.getUserFromAuthentication();
+        if (user == null) 
+        {
+            model.addAttribute("error", "User not found");
+            return "error";
         }
-	        
-        return "Authentication/access-denied";
+        System.out.println(pin);
+        System.out.println(pin);
+        System.out.println(pin);
+        System.out.println(pin);
+        // 2. Validate PIN
+        if (!user.getPin().equals(pin)) 
+        {
+        	//inValidate PIN
+        	model.addAttribute("fromAccountNumber", fromAccountNumber);
+            model.addAttribute("toAccountNumber", toAccountNumber);
+            model.addAttribute("amount", amount);
+            model.addAttribute("error", "Invalid Transaction PIN!");
+            return "Bank/UpiPayment/upi-pin";  // stay on PIN page
+        }
+
+        BankAccount fromAccount = bankAccountService.findByAccountNumber(fromAccountNumber);
+        BankAccount toAccount = bankAccountService.findByAccountNumber(toAccountNumber);
+        
+        // 3. Do transfer
+        fromAccount.setBalance(fromAccount.getBalance().subtract(amount));
+        toAccount.setBalance(toAccount.getBalance().add(amount));
+
+        bankAccountService.update(fromAccount);
+        bankAccountService.update(toAccount);
+
+        // 4. Success
+        model.addAttribute("bankAccount", fromAccount);
+        
+        Transaction transaction = new Transaction(
+                fromAccount,
+                toAccount,
+                amount,
+                "SUCCESS",
+                LocalDateTime.now(),
+                "UPI Payment to " + upiId
+        );
+        transactionService.save(transaction);
+        
+        // PROBLEM: Direct POST response  (Disadvantage of POST Method)
+        // model.addAttribute("success", "Transfer completed");
+        // return "Bank/bank-operation";
+        
+        // IMPORTANT: Use RedirectAttributes to pass success message
+        // This prevents message duplication on page reload
+        redirectAttributes.addFlashAttribute("success", "₹" + amount + " transferred successfully to " + toAccountNumber);
+
+        // SECURITY FIX: Redirect after POST to prevent duplicate transactions on browser reload
+        // Pattern: POST-Redirect-GET (PRG) - prevents form resubmission
+        return "redirect:/bank/success?accountId=" + fromAccountNumber;
     }
 }

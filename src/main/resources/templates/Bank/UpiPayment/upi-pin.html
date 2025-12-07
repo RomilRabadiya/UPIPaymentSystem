@@ -1,11 +1,141 @@
-<!-- templates/Bank/upi-pin.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Enter UPI PIN</title>
     <meta charset="UTF-8" />
+    <style>
+        /* Basic Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom right, #f4f6f9, #e8f0fe);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #222;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 15px;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        p b {
+            color: #000;
+        }
+
+        .error {
+            color: #d32f2f;
+            background: #fdecea;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .instructions {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 6px;
+            display: block;
+            color: #444;
+            text-align: left;
+            width: 100%;
+        }
+
+        .pin-inputs {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 20px 0 25px 0;
+        }
+
+        .pin-box {
+            width: 50px;
+            height: 55px;
+            font-size: 26px;
+            text-align: center;
+            border: 2px solid #bbb;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .pin-box:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 6px rgba(0,123,255,0.5);
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 500px) {
+            .container {
+                padding: 25px 20px;
+            }
+
+            .pin-box {
+                width: 40px;
+                height: 50px;
+                font-size: 22px;
+            }
+
+            button {
+                font-size: 15px;
+                padding: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
+
+<div class="container">
     <h2>Confirm UPI Payment</h2>
 
     <p>
@@ -13,20 +143,51 @@
         to UPI ID: <b><span th:text="${upiId}"></span></b>
     </p>
 
-    <form th:action="@{/bank/upi/confirm}" method="post">
+    <p class="instructions">Enter your 4-digit UPI PIN to authorize this transaction.</p>
+
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+
+    <form th:action="@{/bank/upi/confirm}" method="post" onsubmit="combinePin()">
         <input type="hidden" name="fromAccountNumber" th:value="${fromAccountNumber}" />
         <input type="hidden" name="toAccountNumber" th:value="${toAccountNumber}" />
-		<input type="hidden" name="upiId" th:value="${upiId}" />
+        <input type="hidden" name="upiId" th:value="${upiId}" />
         <input type="hidden" name="amount" th:value="${amount}" />
+        <input type="hidden" id="pin" name="pin">
 
-        <div>
-            <label for="pin">Transaction PIN:</label>
-            <input type="password" id="pin" name="pin" />
+        <label for="pin">Transaction PIN</label>
+
+        <div class="pin-inputs">
+            <input type="password" maxlength="1" class="pin-box" id="p1" oninput="moveNext(this, 1)" />
+            <input type="password" maxlength="1" class="pin-box" id="p2" oninput="moveNext(this, 2)" />
+            <input type="password" maxlength="1" class="pin-box" id="p3" oninput="moveNext(this, 3)" />
+            <input type="password" maxlength="1" class="pin-box" id="p4" oninput="moveNext(this, 4)" />
         </div>
 
         <button type="submit">Confirm Payment</button>
     </form>
+</div>
 
-    <p th:if="${error}" style="color:red;" th:text="${error}"></p>
+<script>
+    // Auto-move to next box
+    function moveNext(current, index) {
+        if(current.value.length === 1) {
+            const next = document.getElementById('p' + (index + 1));
+            if(next) next.focus();
+        }
+    }
+
+    // Combine PIN into hidden input before submitting
+    function combinePin() {
+        let pin = '';
+        for(let i=1; i<=4; i++) {
+            pin += document.getElementById('p'+i).value;
+        }
+        document.getElementById('pin').value = pin;
+    }
+
+    // Focus first box on page load
+    window.onload = () => document.getElementById('p1').focus();
+</script>
+
 </body>
 </html>
