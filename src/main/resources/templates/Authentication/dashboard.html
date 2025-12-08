@@ -5,62 +5,135 @@
     <title>User Dashboard</title>
 
     <style>
+        /* ---------- GLOBAL ---------- */
         body {
-            font-family: Arial, sans-serif;
-            background: #f4f7fb;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #e9efff, #f7faff);
             margin: 0;
             padding: 0;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 800px;
-            background: white;
-            margin: 40px auto;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        h2 {
-            text-align: center;
             color: #333;
-            margin-bottom: 20px;
         }
 
+        h2, h3 {
+            margin: 0 0 10px 0;
+            color: #222;
+            text-align: center;
+        }
+
+        /* ---------- MAIN CONTAINER ---------- */
+        .container {
+            width: 85%;
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 16px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        /* ---------- INFO BOX ---------- */
         .info-box {
             margin-top: 20px;
-            padding: 15px;
-            background: #f0f4ff;
-            border-left: 4px solid #4a6cf7;
-            border-radius: 8px;
+            padding: 18px;
+            background: #eef3ff;
+            border-left: 5px solid #4a6cf7;
+            border-radius: 10px;
         }
 
         .label {
             font-weight: bold;
-            color: #333;
+            font-size: 16px;
         }
 
         .value {
+            font-size: 15px;
             color: #555;
         }
 
-        .btn {
-            display: inline-block;
-            padding: 12px 24px;
-            margin: 10px 5px;
+        /* ---------- QR CODE ---------- */
+        .qr-box {
             text-align: center;
+            margin-top: 25px;
+        }
+
+        .qr-box img {
+            border: 3px solid #4a6cf7;
+            border-radius: 10px;
+            padding: 12px;
+            width: 220px;
+            height: 220px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+
+        /* ---------- ALERT BOXES ---------- */
+        .alert {
+            padding: 12px 16px;
+            margin-top: 18px;
+            border-radius: 10px;
+            font-size: 15px;
+        }
+
+        .alert-danger {
+            background: #fde2e3;
+            border-left: 5px solid #e63946;
+            color: #7b1d21;
+        }
+
+        .alert-warning {
+            background: #fff6d8;
+            border-left: 5px solid #ffcc00;
+            color: #7a6a15;
+        }
+
+        /* ---------- BANK LIST ---------- */
+        .bank-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 15px;
+        }
+
+        .bank-list li {
+            background: white;
+            border: 1px solid #d7d7d7;
+            padding: 12px;
+            border-radius: 10px;
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            justify-content: space-between;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.06);
+        }
+
+        .primary-badge {
+            background: #34c759;
+            padding: 4px 10px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        /* ---------- BUTTONS ---------- */
+        .btn {
+            padding: 12px 22px;
             background: #4a6cf7;
             color: white;
-            text-decoration: none;
-            font-size: 16px;
-            border-radius: 8px;
             border: none;
+            border-radius: 10px;
+            font-size: 15px;
             cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: 0.25s ease-in-out;
         }
 
         .btn:hover {
-            background: #3c59d4;
+            background: #3858db;
+            transform: translateY(-2px);
         }
 
         .btn-secondary {
@@ -68,147 +141,128 @@
         }
 
         .btn-secondary:hover {
-            background: #5a6268;
-        }
-
-        .token-box {
-            margin-top: 20px;
-            padding: 10px;
-            background: #fff3cd;
-            border-left: 4px solid #ffca2c;
-            border-radius: 8px;
-            word-wrap: break-word;
-            font-size: 12px;
-        }
-
-        .alert {
-            margin-top: 15px;
-            padding: 12px;
-            border-radius: 8px;
-        }
-
-        .alert-danger {
-            background-color: #f8d7da;
-            border-left: 4px solid #dc3545;
-            color: #721c24;
-        }
-
-        .alert-warning {
-            background-color: #fff3cd;
-            border-left: 4px solid #ffc107;
-            color: #856404;
-        }
-
-        .bank-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .bank-list li {
-            padding: 10px;
-            margin: 5px 0;
-            background: white;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-        }
-
-        .primary-badge {
-            color: green;
-            font-weight: bold;
-            margin-left: 10px;
+            background: #565e64;
         }
 
         .button-group {
-            margin-top: 20px;
+            margin-top: 25px;
             text-align: center;
         }
+
+        .button-group .btn {
+            margin: 6px;
+        }
+
+        /* ---------- DOWNLOAD FORM ---------- */
+        .download-form {
+            margin-top: 30px;
+            text-align: center;
+            padding: 18px;
+            background: #eef3ff;
+            border-left: 5px solid #4a6cf7;
+            border-radius: 10px;
+        }
+
+        .download-form label {
+            font-weight: bold;
+            margin-right: 12px;
+            font-size: 15px;
+        }
+
+        .download-form select {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            margin-right: 10px;
+        }
     </style>
-    <!-- Include JWT Authentication Helper -->
-    <script src="/js/jwt-auth.js"></script>
 </head>
 
 <body>
 
 <div class="container" th:if="${user != null}">
 
-    <h2>Welcome, <span th:text="${user.name}">User</span>!</h2>
+    <h2>Welcome, <span th:text="${user.name}"></span>!</h2>
 
     <div class="info-box">
         <p><span class="label">Mobile:</span> <span class="value" th:text="${user.mobile}"></span></p>
         <p><span class="label">Email:</span> <span class="value" th:text="${user.email}"></span></p>
         <p><span class="label">UPI ID:</span> <span class="value" th:text="${user.upiId}"></span></p>
     </div>
-	
-	<img th:src="@{${user.qrCodePath}}"
-	     alt="UPI QR Code"
-	     style="border:1px solid #000; padding:10px; width:200px; height:200px;">
 
+    <div class="qr-box">
+        <img th:src="@{${user.qrCodePath}}" alt="UPI QR Code">
+    </div>
 
-    <!-- Error message -->
+    <!-- Error -->
     <div class="alert alert-danger" th:if="${error != null}">
         <p th:text="${error}"></p>
     </div>
 
-    <!-- Bank message -->
+    <!-- Bank Warning -->
     <div class="alert alert-warning" th:if="${bankMessage != null}">
         <p th:text="${bankMessage}"></p>
     </div>
 
-    <!-- Show warning if no primary account is set -->
+    <!-- No Primary Account -->
     <div class="alert alert-warning" th:if="${hasPrimaryBankAccount != null and !hasPrimaryBankAccount}">
-        <p>User does not have any Primary Account. For further process, please select a Primary Account.</p>
+        User does not have any Primary Account. Please select one to continue.
     </div>
 
-    <!-- Show list of bank accounts if available -->
+    <!-- Bank List -->
     <div class="info-box" th:if="${bankList != null and !bankList.isEmpty()}">
-        <h3>Your Bank Accounts:</h3>
+        <h3>Your Bank Accounts</h3>
+
         <ul class="bank-list">
             <li th:each="bank : ${bankList}">
-                <span class="label" th:text="${bank.bankName}"></span> - 
-                <span class="value" th:text="${bank.accountNumber}"></span>
-                
-                <!-- Show (Primary) if this is the primary account -->
-                <span class="primary-badge" th:if="${bank.primaryAccount}">(Primary)</span>
-                
-                <!-- Operate button -->
-                <span th:if="${hasPrimaryBankAccount != null and hasPrimaryBankAccount}">
-                    <form th:action="@{/bank/process}" method="get" style="display: inline;">
-                        <input type="hidden" name="accountId" th:value="${bank.accountNumber}" />
-                        <button type="submit" class="btn">Operate</button>
+                <div>
+                    <span class="label" th:text="${bank.bankName}"></span> — 
+                    <span class="value" th:text="${bank.accountNumber}"></span>
+                </div>
+
+                <div style="display:flex; gap:10px;">
+                    <span th:if="${bank.primaryAccount}" class="primary-badge">Primary</span>
+
+                    <!-- Operate -->
+                    <form th:if="${hasPrimaryBankAccount}" th:action="@{/bank/process}" method="get">
+                        <input type="hidden" name="accountId" th:value="${bank.accountNumber}">
+                        <button class="btn">Operate</button>
                     </form>
-                </span>
-                
-                <!-- Set as Primary button (only show if not already primary) -->
-                <form th:if="${!bank.primaryAccount}" th:action="@{/bank/set-primary}" method="post" style="display: inline;">
-                    <input type="hidden" name="accountId" th:value="${bank.accountNumber}" />
-                    <button type="submit" class="btn btn-secondary">Set as Primary</button>
-                </form>
+
+                    <!-- Set Primary -->
+                    <form th:if="${!bank.primaryAccount}" th:action="@{/bank/set-primary}" method="post">
+                        <input type="hidden" name="accountId" th:value="${bank.accountNumber}">
+                        <button class="btn btn-secondary">Set Primary</button>
+                    </form>
+                </div>
             </li>
         </ul>
     </div>
-	
-	<a th:href="@{/QrCodePayment}" class="btn btn-secondary">Scan QR Code For Payment</a>
-    <!-- Add Bank button -->
+
     <div class="button-group">
+        <a th:href="@{/QrCodePayment}" class="btn btn-secondary">Scan QR</a>
         <form th:action="@{/add-bank}" method="get" style="display: inline;">
-            <button type="submit" class="btn">Add Bank</button>
+            <button class="btn">Add Bank</button>
         </form>
-        
-        <a th:href="@{/transactions}" class="btn btn-secondary">Show All Transactions</a>
-		<a th:href="@{/Test}" class="btn btn-secondary">Test</a>
+        <a th:href="@{/transactions}" class="btn btn-secondary">All Transactions</a>
+        <a th:href="@{/Test}" class="btn btn-secondary">Test</a>
         <a th:href="@{/login}" class="btn btn-secondary">Logout</a>
     </div>
-</div>
 
-<!-- Fallback if user is null -->
-<div class="container" th:if="${user == null}">
-    <h2>Error</h2>
-    <div class="alert alert-danger">
-        <p>User information not available. Please login again.</p>
+    <!-- DOWNLOAD STATEMENT FORM -->
+    <div class="download-form">
+        <form th:action="@{/statement/download}" method="get" style="display:inline;">
+            <label for="duration">Select Duration:</label>
+            <select name="duration" id="duration">
+                <option value="1">Last Month</option>
+                <option value="3">Last 3 Months</option>
+                <option value="12">Last Year</option>
+            </select>
+            <button type="submit" class="btn">Download Statement (PDF)</button>
+        </form>
     </div>
-    <div class="button-group">
-        <a th:href="@{/login}" class="btn">Go to Login</a>
-    </div>
+
 </div>
 </body>
 </html>

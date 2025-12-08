@@ -20,7 +20,7 @@ public class TransactionService {
     public Transaction save(Transaction transaction) {
         transaction.setTimestamp(LocalDateTime.now());
         return transactionRepository.save(transaction);
-    }
+    }    
     
     public List<Transaction> getSentTransactions(Long accountId) 
     {

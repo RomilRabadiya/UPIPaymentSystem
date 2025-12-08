@@ -32,28 +32,19 @@ public class TransactionController
 
     // Show all transactions
     @GetMapping("/transactions")
-    public String showUserTransactions(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        if (auth != null && auth.isAuthenticated()) {
-            UserDetails userDetails = (UserDetails) auth.getPrincipal();
-            String mobile = userDetails.getUsername();
-            
-			// find logged-in user
-            User user = bankAccountService.getUserFromAuthentication();
-            if (user == null) {
-                model.addAttribute("error", "User not found!");
-                return "error";
-            }
-
-            // fetch only user's transactions
-            List<Transaction> transactions = transactionService.getTransactionsForUser(user);
-
-            model.addAttribute("transactions", transactions);
-            return "Bank/Transactions/transaction-list";  // same Thymeleaf table
+    public String showUserTransactions(Model model) {            
+		// find logged-in user
+        User user = bankAccountService.getUserFromAuthentication();
+        if (user == null) {
+            model.addAttribute("error", "User not found!");
+            return "error";
         }
 
-        return "Authentication/access-denied";
+        // fetch only user's transactions
+        List<Transaction> transactions = transactionService.getTransactionsForUser(user);
+
+        model.addAttribute("transactions", transactions);
+        return "Bank/Transactions/transaction-list";  // same Thymeleaf table
     }
     
     
