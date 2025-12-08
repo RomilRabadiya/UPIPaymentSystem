@@ -99,6 +99,31 @@ All pages styled including:
 - Hover effects
 - Centered responsive UI
 
+### 8️⃣ PDF Statement Download (New Feature)
+- Users can download their transaction statement as a PDF directly from the dashboard.
+- Select duration for the statement:
+  - Last Month
+  - Last 3 Months
+  - Last Year
+- PDF includes:
+  - Total Sent
+  - Total Received
+  - Failed Transactions
+  - Transaction table with time, description, status, and amount
+- Unique file names for each download to avoid conflicts.
+
+**Frontend:**
+- Dropdown selection for duration
+- Styled download button on dashboard
+
+**Backend:**
+- `PDFBoxService` generates PDF for the selected period
+- `StatementController` handles download request
+
+**Flow:**
+```
+Dashboard → Select Duration → Click Download → PDF Generated → User Downloads
+```
 ---
 
 ## 🏗️ System Architecture
@@ -258,7 +283,6 @@ All errors are shown using `th:if` banners.
 - Auto-read OTP
 - Rest API version (for mobile apps)
 - Multi-factor authentication
-- PDF receipt download
 - Notification system
 
 ---
